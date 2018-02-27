@@ -121,7 +121,7 @@ central.connect(peripheral: discoverPeripheral,
 central.cancelConnecting()
 
 
-central.disConnect(element: peripheral) { (result) in
+central.disConnect(peripheral: peripheral) { (result) in
                 switch result {
                 case .success(let peripheral):
                     print("Disconnect periphera:\(peripheral.name).")

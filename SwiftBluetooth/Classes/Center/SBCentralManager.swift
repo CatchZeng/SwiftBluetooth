@@ -187,18 +187,18 @@ open class SBCentralManager: NSObject, BluetoothCentral {
         connectOperation?.cancel()
     }
 
-    public func disConnect(element: Element, callback: ((Result<Element>) -> Void)?) {
+    public func disConnect(peripheral: Element, callback: ((Result<Element>) -> Void)?) {
         if !isBluetoothAvailable {
             callback?(.failure(error: SwiftBluetoothError.bluetoothStateError))
             return
         }
         
-        disconnectOperation = DisconnectOperation(peripheral: element,
+        disconnectOperation = DisconnectOperation(peripheral: peripheral,
                                                   manager: centralManager,
                                                   callback: callback)
         disconnectOperation?.start()
         
-        listeners.forEach {$0.value?.central(central: self, onDisconnecting: element)}
+        listeners.forEach {$0.value?.central(central: self, onDisconnecting: peripheral)}
     }
 }
 

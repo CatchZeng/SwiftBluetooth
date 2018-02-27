@@ -51,7 +51,7 @@ class ViewController: UIViewController, SBCentraListener {
     }
     
     fileprivate func disconnect(_ peripheral: (SBCentralManager.Element)) {
-        SBCentralManager.shared.disConnect(element: peripheral) { (result) in
+        SBCentralManager.shared.disConnect(peripheral: peripheral) { (result) in
             switch result {
             case .success(let peripheral):
                 print("Disconnect periphera:\(peripheral.name).")

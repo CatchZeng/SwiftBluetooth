@@ -85,7 +85,7 @@ public protocol BluetoothCentral: Central {
                  timeoutInterval: TimeInterval,
                  callback: ((Result<BLEPeripheral>) -> Void)?)
 
-    func disConnect(element: Element,
+    func disConnect(peripheral: Element,
                     callback: ((Result<BLEPeripheral>) -> Void)?)
 }
 
