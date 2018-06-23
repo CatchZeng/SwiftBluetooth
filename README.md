@@ -55,6 +55,9 @@ func central<C>(central: C, didConnect device: Peripheral) where C : Central {
 func central<C>(central: C, onDisconnecting device: Peripheral) where C : Central {
 }
 
+func center<C: Central>(center: C, onConnecting device: Peripheral) {
+}
+
 func central<C>(central: C, didDisconnect device: Peripheral, error: Error?) where C : Central {
 }
 

@@ -159,6 +159,20 @@ open class SBCentralManager: NSObject, BluetoothCentral {
         scanOperation?.cancel()
         scanOperation = nil
     }
+    
+    public func reScan(serviceUUIDs: [CBUUID]?,
+                       allowDuplicates: Bool,
+                       filter: ((Element) -> (Bool))?,
+                       sorter: ((Element, Element) -> (Bool))?,
+                       callback: ((Result<(Element, [Element])>) -> Void)?) {
+        peripheralContainer.foundPeripherals.removeAll()
+        stopScan()
+        scan(serviceUUIDs: serviceUUIDs,
+             allowDuplicates: allowDuplicates,
+             filter: filter,
+             sorter: sorter,
+             callback: callback)
+    }
 
     public func connect(peripheral: Element,
                         timeoutInterval: TimeInterval,
@@ -181,6 +195,8 @@ open class SBCentralManager: NSObject, BluetoothCentral {
                                          timeoutInterval: timeoutInterval,
                                          callback: callback)
         connectOperation?.start()
+        
+        listeners.forEach {$0.value?.center(center: self, onConnecting: peripheral)}
     }
     
     public func cancelConnecting() {
@@ -212,6 +228,9 @@ extension SBCentralManager: CBCentralManagerDelegate {
         listeners.forEach {$0.value?.central(central: self, available: central.state == .poweredOn)}
         
         if central.centerState == .poweredOff {
+            peripheralContainer.connectedPeripherals.forEach { (blePeripheral) in
+                listeners.forEach {$0.value?.central(central: self, didDisconnect: blePeripheral, error: nil)}
+            }
             peripheralContainer.powerOff()
             cancelConnecting()
         }

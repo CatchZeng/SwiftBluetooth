@@ -41,6 +41,8 @@ extension CBCentralManager {
     public func cleanup(peripheral: CBPeripheral) {
         printLog("clean up \(String(describing: peripheral.name))")
         
+        cancelPeripheralConnection(peripheral)
+
         guard peripheral.state == .connected,
             let services = peripheral.services,
             services.count > 0 else {
@@ -59,8 +61,6 @@ extension CBCentralManager {
                 }
             }
         }
-        
-        cancelPeripheralConnection(peripheral)
     }
 }
 
@@ -92,6 +92,7 @@ public protocol BluetoothCentral: Central {
 public protocol CentraListener: class {
     func central<C: Central>(central: C, didChangeState: CenterState)
     func central<C: Central>(central: C, didConnect device: Peripheral)
+    func center<C: Central>(center: C, onConnecting device: Peripheral)
     func central<C: Central>(central: C, onDisconnecting device: Peripheral)
     func central<C: Central>(central: C, didDisconnect device: Peripheral, error: Error?)
 }
@@ -99,6 +100,7 @@ public protocol CentraListener: class {
 extension CentraListener {
     public func central<C: Central>(central: C, didChangeState: CenterState) {}
     public func central<C: Central>(central: C, didConnect device: Peripheral) {}
+    public func center<C: Central>(center: C, onConnecting device: Peripheral) {}
     public func central<C: Central>(central: C, onDisconnecting device: Peripheral) {}
     public func central<C: Central>(central: C, didDisconnect device: Peripheral, error: Error?) {}
 }

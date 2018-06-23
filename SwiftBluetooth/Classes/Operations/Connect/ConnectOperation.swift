@@ -64,6 +64,7 @@ open class ConnectOperation: BLEOperation {
     public override func cancel() {
         super.cancel()
 
+        manager?.cancelPeripheralConnection(peripheral.peripheral)
         callback?(.cancelled)
         callback = nil
     }
