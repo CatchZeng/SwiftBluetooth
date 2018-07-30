@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SwiftBluetooth'
-  s.version          = '0.2.0'
+  s.version          = '0.3.0'
   s.summary          = 'A simple framework for building BLE apps.'
   s.homepage         = 'https://github.com/CatchZeng/SwiftBluetooth'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }

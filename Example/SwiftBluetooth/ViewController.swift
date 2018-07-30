@@ -21,33 +21,13 @@ class ViewController: UIViewController, SBCentraListener {
         // Scan will fail beofre bluetooth available.
         scan()
         
-        
         //SBCentralManager.shared.stopScan()
     }
-
-    func central<C>(central: C, available: Bool) where C : Central {
+    
+    func central(_ central: SBCentralManager, available: Bool) {
         if available {
             scan()
         }
-    }
-    
-    func central<C>(central: C, didChangeState: CenterState) where C : Central {
-    }
-    
-    func central<C>(central: C, didConnect device: Peripheral) where C : Central {
-        
-    }
-    
-    func central<C>(central: C, onDisconnecting device: Peripheral) where C : Central {
-    }
-    
-    func central<C>(central: C, didDisconnect device: Peripheral, error: Error?) where C : Central {
-    }
-    
-    func central<C>(central: C, peripheral: BLEPeripheral, didRSSIChanged RSSI: NSNumber) where C : Central {
-    }
-    
-    func central<C>(central: C, device: BLEPeripheral, characteristic: CBCharacteristic, didReceive data: Result<Data>) where C : Central {
     }
     
     fileprivate func disconnect(_ peripheral: (SBCentralManager.Element)) {
@@ -140,4 +120,3 @@ class ViewController: UIViewController, SBCentraListener {
         }
     }
 }
-

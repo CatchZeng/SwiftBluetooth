@@ -5,6 +5,8 @@ A simple framework for building BLE apps.
 [![License](https://img.shields.io/cocoapods/l/SwiftBluetooth.svg?style=flat)](http://cocoapods.org/pods/SwiftBluetooth)
 [![Platform](https://img.shields.io/cocoapods/p/SwiftBluetooth.svg?style=flat)](http://cocoapods.org/pods/SwiftBluetooth)
 
+![Logo](https://github.com/CatchZeng/SwiftBluetooth/blob/master/logo.png)
+
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
@@ -43,28 +45,28 @@ isBluetoothAvailable
 #### Implement SBCenterListener
 
 ```swift
-func central<C>(central: C, available: Bool) where C : Central {
+func central(_ central: SBCentralManager, available: Bool) {
 }
 
-func central<C>(central: C, didChangeState: CenterState) where C : Central {
+func central(_ central: SBCentralManager, didChangeState: CenterState) {
 }
 
-func central<C>(central: C, didConnect device: Peripheral) where C : Central {
+func central(_ central: SBCentralManager, didConnect device: Peripheral) {
 }
 
-func central<C>(central: C, onDisconnecting device: Peripheral) where C : Central {
+func central(_ central: SBCentralManager, onDisconnecting device: Peripheral) {
 }
 
-func center<C: Central>(center: C, onConnecting device: Peripheral) {
+func central(_ central: SBCentralManager, onConnecting device: Peripheral) {
 }
 
-func central<C>(central: C, didDisconnect device: Peripheral, error: Error?) where C : Central {
+func central(_ central: SBCentralManager, didDisconnect device: Peripheral, error: Error?) {
 }
 
-func central<C>(central: C, peripheral: BLEPeripheral, didRSSIChanged RSSI: NSNumber) where C : Central {
+func central(_ central: SBCentralManager, peripheral: BLEPeripheral, didRSSIChanged RSSI: NSNumber) {
 }
 
-func central<C>(central: C, device: BLEPeripheral, characteristic: CBCharacteristic, didReceive data: Result<Data>) where C : Central {
+func central(_ central: SBCentralManager, device: BLEPeripheral, characteristic: CBCharacteristic, didReceive data: Result<Data>) {
 }
 
 ```

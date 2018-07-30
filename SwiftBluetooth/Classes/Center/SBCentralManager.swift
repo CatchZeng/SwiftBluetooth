@@ -9,7 +9,7 @@
 import Foundation
 import CoreBluetooth
 
-open class SBCentralManager: NSObject, BluetoothCentral {
+open class SBCentralManager: NSObject {
     // MARK: Public Property
     
     public typealias Element = BLEPeripheral
@@ -93,7 +93,7 @@ open class SBCentralManager: NSObject, BluetoothCentral {
         listeners.append(SBCentraListenerWeakWrapper(value: listener))
     }
 
-    public func removeListener(listener: CentraListener?) {
+    public func removeListener(listener: SBCentraListener?) {
         guard let listener = listener else {
             return
         }
@@ -132,10 +132,9 @@ open class SBCentralManager: NSObject, BluetoothCentral {
                 
                 if StrongSelf.peripheralContainer.hasFound(peripheral: discoverPeripheral) { // Update rssi
                     let rssi = NSNumber(value: discoverPeripheral.rssi)
-                    StrongSelf.listeners.forEach {$0.value?.central(central: StrongSelf,
-                                                                                    peripheral: discoverPeripheral,
-                                                                                    didRSSIChanged: rssi)}
-                    
+                    StrongSelf.listeners.forEach {$0.value?.central(StrongSelf,
+                                                                    peripheral: discoverPeripheral,
+                                                                    didRSSIChanged: rssi)}
                 } else {
                     printLog("discovery: \(discoverPeripheral.name) count: \(foundPeripheralList.count)")
                 }
@@ -196,7 +195,7 @@ open class SBCentralManager: NSObject, BluetoothCentral {
                                          callback: callback)
         connectOperation?.start()
         
-        listeners.forEach {$0.value?.center(center: self, onConnecting: peripheral)}
+        listeners.forEach {$0.value?.central(self, onConnecting: peripheral)}
     }
     
     public func cancelConnecting() {
@@ -214,7 +213,7 @@ open class SBCentralManager: NSObject, BluetoothCentral {
                                                   callback: callback)
         disconnectOperation?.start()
         
-        listeners.forEach {$0.value?.central(central: self, onDisconnecting: peripheral)}
+        listeners.forEach {$0.value?.central(self, onDisconnecting: peripheral)}
     }
 }
 
@@ -224,12 +223,12 @@ extension SBCentralManager: CBCentralManagerDelegate {
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
         printLog("central state: \(central.centerState.rawValue)")
 
-        listeners.forEach {$0.value?.central(central: self, didChangeState: central.centerState)}
-        listeners.forEach {$0.value?.central(central: self, available: central.state == .poweredOn)}
+        listeners.forEach {$0.value?.central(self, didChangeState: central.centerState)}
+        listeners.forEach {$0.value?.central(self, available: central.state == .poweredOn)}
         
         if central.centerState == .poweredOff {
             peripheralContainer.connectedPeripherals.forEach { (blePeripheral) in
-                listeners.forEach {$0.value?.central(central: self, didDisconnect: blePeripheral, error: nil)}
+                listeners.forEach {$0.value?.central(self, didDisconnect: blePeripheral, error: nil)}
             }
             peripheralContainer.powerOff()
             cancelConnecting()
@@ -247,7 +246,7 @@ extension SBCentralManager: CBCentralManagerDelegate {
         if let blePeripheral = peripheralContainer.addConnected(peripheral: peripheral) {
             blePeripheral.delegate = self
             connectOperation?.process(event: .didConnectPeripheral(blePeripheral))
-            listeners.forEach {$0.value?.central(central: self, didConnect: blePeripheral)}
+            listeners.forEach {$0.value?.central(self, didConnect: blePeripheral)}
         }
     }
     
@@ -265,7 +264,7 @@ extension SBCentralManager: CBCentralManagerDelegate {
         if let blePeripheral = peripheralContainer.connectedPeripheral(with: peripheral) {
             peripheralContainer.removeConnected(peripheral: blePeripheral)
             disconnectOperation?.process(event: .didDisconnectPeripheral(blePeripheral))
-            listeners.forEach {$0.value?.central(central: self, didDisconnect: blePeripheral, error: error)}
+            listeners.forEach {$0.value?.central(self, didDisconnect: blePeripheral, error: error)}
         }
     }
 }
@@ -276,7 +275,7 @@ extension SBCentralManager: BLEPeripheralDelegate {
                     didReceive data: Data?,
                     on characteristic: CBCharacteristic) {
         if let data = data {
-            listeners.forEach {$0.value?.central(central: self,
+            listeners.forEach {$0.value?.central(self,
                                                 device: peripheral,
                                                 characteristic: characteristic,
                                                 didReceive: .success(data))}
@@ -284,7 +283,7 @@ extension SBCentralManager: BLEPeripheralDelegate {
     }
 
     public func peripheral(_ peripheral: BLEPeripheral, didRSSIChanged RSSI: NSNumber) {
-        listeners.forEach {$0.value?.central(central: self,
+        listeners.forEach {$0.value?.central(self,
                                             peripheral: peripheral,
                                             didRSSIChanged: RSSI)}
     }
